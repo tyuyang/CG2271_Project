@@ -5,14 +5,18 @@ Component: ARM Compiler 5.06 update 6 (build 750) Tool: armlink [4d35ed]
 Section Cross References
 
     main.o(i.main) refers to system_mkl25z4.o(i.SystemCoreClockUpdate) for SystemCoreClockUpdate
-    main.o(i.main) refers to main.o(i.initGPIO) for initGPIO
+    main.o(i.main) refers to colorhandler.o(i.initGPIOLED) for initGPIOLED
     main.o(i.main) refers to rtx_kernel.o(.text.osKernelInitialize) for osKernelInitialize
     main.o(i.main) refers to rtx_thread.o(.text.osThreadNew) for osThreadNew
     main.o(i.main) refers to rtx_kernel.o(.text.osKernelStart) for osKernelStart
     main.o(i.main) refers to main.o(i.movingGreenLED) for movingGreenLED
-    main.o(i.movingGreenLED) refers to rtx_delay.o(.text.osDelay) for osDelay
-    main.o(i.movingRedLED) refers to rtx_delay.o(.text.osDelay) for osDelay
-    main.o(i.stationRedLED) refers to rtx_delay.o(.text.osDelay) for osDelay
+    main.o(i.movingGreenLED) refers to colorhandler.o(i.startMovingGreen) for startMovingGreen
+    main.o(i.movingRedLED) refers to colorhandler.o(i.startSlowFlashRed) for startSlowFlashRed
+    main.o(i.stationGreenLED) refers to colorhandler.o(i.startStationGreen) for startStationGreen
+    main.o(i.stationRedLED) refers to colorhandler.o(i.startFastFlashRed) for startFastFlashRed
+    colorhandler.o(i.startFastFlashRed) refers to rtx_delay.o(.text.osDelay) for osDelay
+    colorhandler.o(i.startMovingGreen) refers to rtx_delay.o(.text.osDelay) for osDelay
+    colorhandler.o(i.startSlowFlashRed) refers to rtx_delay.o(.text.osDelay) for osDelay
     rtx_lib.o(.constdata) refers to rtx_lib.o(.bss.os.thread.cb) for os_idle_thread_cb
     rtx_lib.o(.constdata) refers to rtx_lib.o(.bss.os.thread.stack) for os_idle_thread_stack
     rtx_lib.o(.constdata) refers to rtx_lib.o(.bss.os.msgqueue.cb) for os_timer_mq_cb
@@ -587,9 +591,14 @@ Removing Unused input sections from the image.
 
     Removing main.o(.rev16_text), (4 bytes).
     Removing main.o(.revsh_text), (4 bytes).
-    Removing main.o(i.movingRedLED), (48 bytes).
-    Removing main.o(i.stationGreenLED), (20 bytes).
-    Removing main.o(i.stationRedLED), (44 bytes).
+    Removing main.o(i.movingRedLED), (8 bytes).
+    Removing main.o(i.stationGreenLED), (8 bytes).
+    Removing main.o(i.stationRedLED), (8 bytes).
+    Removing colorhandler.o(.rev16_text), (4 bytes).
+    Removing colorhandler.o(.revsh_text), (4 bytes).
+    Removing colorhandler.o(i.startFastFlashRed), (44 bytes).
+    Removing colorhandler.o(i.startSlowFlashRed), (48 bytes).
+    Removing colorhandler.o(i.startStationGreen), (20 bytes).
     Removing rtx_lib.o(.rev16_text), (4 bytes).
     Removing rtx_lib.o(.revsh_text), (4 bytes).
     Removing rtx_lib.o(.data), (4 bytes).
@@ -920,7 +929,7 @@ Removing Unused input sections from the image.
     Removing rtx_msgqueue.o(.text.svcRtxMessageQueueDelete), (112 bytes).
     Removing rtx_msgqueue.o(.ARM.exidx.text.svcRtxMessageQueueDelete), (8 bytes).
 
-334 unused section(s) (total 8227 bytes) removed from the image.
+339 unused section(s) (total 8259 bytes) removed from the image.
 
 ==============================================================================
 
@@ -933,21 +942,21 @@ Image Symbol Table
     RESET                                    0x00000000   Section      192  startup_mkl25z4.o(RESET)
     ../clib/../cmprslib/zerorunl.c           0x00000000   Number         0  __dczerorl.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uidiv.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpyb.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpya.o ABSOLUTE
+    ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpyb.o ABSOLUTE
     ../clib/microlib/string/memset.c         0x00000000   Number         0  memseta.o ABSOLUTE
     ..\..\..\Source\ARM\irq_cm0.s            0x00000000   Number         0  irq_cm0.o ABSOLUTE
     C:\Users\wijay\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Source\rtx_lib.c 0x00000000   Number         0  rtx_lib.o ABSOLUTE
@@ -957,6 +966,8 @@ Image Symbol Table
     RTE\Device\MKL25Z128xxx4\system_MKL25Z4.c 0x00000000   Number         0  system_mkl25z4.o ABSOLUTE
     RTE\\CMSIS\\RTX_Config.c                 0x00000000   Number         0  rtx_config.o ABSOLUTE
     RTE\\Device\\MKL25Z128xxx4\\system_MKL25Z4.c 0x00000000   Number         0  system_mkl25z4.o ABSOLUTE
+    colorHandler.c                           0x00000000   Number         0  colorhandler.o ABSOLUTE
+    colorHandler.c                           0x00000000   Number         0  colorhandler.o ABSOLUTE
     dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
     handlers.s                               0x00000000   Number         0  handlers.o ABSOLUTE
     init.s                                   0x00000000   Number         0  init.o ABSOLUTE
@@ -1134,20 +1145,21 @@ Image Symbol Table
     i.__ARM_common_switch8                   0x00001784   Section        0  rtx_config.o(i.__ARM_common_switch8)
     i.__scatterload_copy                     0x000017a0   Section       14  handlers.o(i.__scatterload_copy)
     i.__scatterload_zeroinit                 0x000017ae   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i.initGPIO                               0x000017bc   Section        0  main.o(i.initGPIO)
+    i.initGPIOLED                            0x000017bc   Section        0  colorhandler.o(i.initGPIOLED)
     i.main                                   0x000019a8   Section        0  main.o(i.main)
     i.movingGreenLED                         0x000019cc   Section        0  main.o(i.movingGreenLED)
-    i.osRtxErrorNotify                       0x00001a34   Section        0  rtx_config.o(i.osRtxErrorNotify)
-    i.osRtxIdleThread                        0x00001a54   Section        0  rtx_config.o(i.osRtxIdleThread)
-    .constdata                               0x00001a58   Section      100  rtx_lib.o(.constdata)
-    os_idle_thread_attr                      0x00001a58   Data          36  rtx_lib.o(.constdata)
-    os_timer_thread_attr                     0x00001a7c   Data          36  rtx_lib.o(.constdata)
-    os_timer_mq_attr                         0x00001aa0   Data          24  rtx_lib.o(.constdata)
-    .rodata                                  0x00001abc   Section      160  rtx_lib.o(.rodata)
-    __tagsym$$used                           0x00001abc   Number         0  rtx_lib.o(.rodata)
-    __tagsym$$used                           0x00001b24   Number         0  rtx_lib.o(.rodata)
-    [Anonymous Symbol]                       0x00001b5c   Section        0  rtx_kernel.o(.rodata.str1.4)
-    .L.str                                   0x00001b5c   Data          11  rtx_kernel.o(.rodata.str1.4)
+    i.osRtxErrorNotify                       0x000019d4   Section        0  rtx_config.o(i.osRtxErrorNotify)
+    i.osRtxIdleThread                        0x000019f4   Section        0  rtx_config.o(i.osRtxIdleThread)
+    i.startMovingGreen                       0x000019f8   Section        0  colorhandler.o(i.startMovingGreen)
+    .constdata                               0x00001a60   Section      100  rtx_lib.o(.constdata)
+    os_idle_thread_attr                      0x00001a60   Data          36  rtx_lib.o(.constdata)
+    os_timer_thread_attr                     0x00001a84   Data          36  rtx_lib.o(.constdata)
+    os_timer_mq_attr                         0x00001aa8   Data          24  rtx_lib.o(.constdata)
+    .rodata                                  0x00001ac4   Section      160  rtx_lib.o(.rodata)
+    __tagsym$$used                           0x00001ac4   Number         0  rtx_lib.o(.rodata)
+    __tagsym$$used                           0x00001b2c   Number         0  rtx_lib.o(.rodata)
+    [Anonymous Symbol]                       0x00001b64   Section        0  rtx_kernel.o(.rodata.str1.4)
+    .L.str                                   0x00001b64   Data          11  rtx_kernel.o(.rodata.str1.4)
     .bss.os                                  0x1ffff000   Section     4160  rtx_lib.o(.bss.os)
     os_mem                                   0x1ffff000   Data        4096  rtx_lib.o(.bss.os)
     os_isr_queue                             0x20000000   Data          64  rtx_lib.o(.bss.os)
@@ -1295,16 +1307,17 @@ Image Symbol Table
     __ARM_common_switch8                     0x00001785   Thumb Code    28  rtx_config.o(i.__ARM_common_switch8)
     __scatterload_copy                       0x000017a1   Thumb Code    14  handlers.o(i.__scatterload_copy)
     __scatterload_zeroinit                   0x000017af   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    initGPIO                                 0x000017bd   Thumb Code   470  main.o(i.initGPIO)
+    initGPIOLED                              0x000017bd   Thumb Code   470  colorhandler.o(i.initGPIOLED)
     main                                     0x000019a9   Thumb Code    30  main.o(i.main)
-    movingGreenLED                           0x000019cd   Thumb Code   100  main.o(i.movingGreenLED)
-    osRtxErrorNotify                         0x00001a35   Thumb Code    32  rtx_config.o(i.osRtxErrorNotify)
-    osRtxIdleThread                          0x00001a55   Thumb Code     4  rtx_config.o(i.osRtxIdleThread)
-    osRtxUserSVC                             0x00001ab8   Data           4  rtx_lib.o(.constdata)
-    osRtxConfig                              0x00001abc   Data         104  rtx_lib.o(.rodata)
-    os_cb_sections                           0x00001b24   Data          56  rtx_lib.o(.rodata)
-    Region$$Table$$Base                      0x00001b68   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x00001b88   Number         0  anon$$obj.o(Region$$Table)
+    movingGreenLED                           0x000019cd   Thumb Code     8  main.o(i.movingGreenLED)
+    osRtxErrorNotify                         0x000019d5   Thumb Code    32  rtx_config.o(i.osRtxErrorNotify)
+    osRtxIdleThread                          0x000019f5   Thumb Code     4  rtx_config.o(i.osRtxIdleThread)
+    startMovingGreen                         0x000019f9   Thumb Code   100  colorhandler.o(i.startMovingGreen)
+    osRtxUserSVC                             0x00001ac0   Data           4  rtx_lib.o(.constdata)
+    osRtxConfig                              0x00001ac4   Data         104  rtx_lib.o(.rodata)
+    os_cb_sections                           0x00001b2c   Data          56  rtx_lib.o(.rodata)
+    Region$$Table$$Base                      0x00001b70   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x00001b90   Number         0  anon$$obj.o(Region$$Table)
     .bss.os.msgqueue.cb$$Base                0x20000040   Number         0  rtx_lib.o(.bss.os.msgqueue.cb)
     .bss.os.msgqueue.cb$$Limit               0x20000074   Number         0  rtx_lib.o(.bss.os.msgqueue.cb)
     .bss.os.thread.cb$$Base                  0x200000c4   Number         0  rtx_lib.o(.bss.os.thread.cb)
@@ -1321,133 +1334,134 @@ Memory Map of the image
 
   Image Entry point : 0x000000d5
 
-  Load Region LR_1 (Base: 0x00000000, Size: 0x00002f80, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00001bbc])
+  Load Region LR_1 (Base: 0x00000000, Size: 0x00002f88, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00001bc4])
 
-    Execution Region ER_RO (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x00001b88, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x00001b90, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x00000000   0x00000000   0x000000c0   Data   RO          154    RESET               startup_mkl25z4.o
-    0x000000c0   0x000000c0   0x00000000   Code   RO          658  * .ARM.Collect$$$$00000000  mc_p.l(entry.o)
-    0x000000c0   0x000000c0   0x00000004   Code   RO          669    .ARM.Collect$$$$00000001  mc_p.l(entry2.o)
-    0x000000c4   0x000000c4   0x00000004   Code   RO          672    .ARM.Collect$$$$00000004  mc_p.l(entry5.o)
-    0x000000c8   0x000000c8   0x00000000   Code   RO          674    .ARM.Collect$$$$00000008  mc_p.l(entry7b.o)
-    0x000000c8   0x000000c8   0x00000000   Code   RO          676    .ARM.Collect$$$$0000000A  mc_p.l(entry8b.o)
-    0x000000c8   0x000000c8   0x00000008   Code   RO          677    .ARM.Collect$$$$0000000B  mc_p.l(entry9a.o)
-    0x000000d0   0x000000d0   0x00000000   Code   RO          679    .ARM.Collect$$$$0000000D  mc_p.l(entry10a.o)
-    0x000000d0   0x000000d0   0x00000000   Code   RO          681    .ARM.Collect$$$$0000000F  mc_p.l(entry11a.o)
-    0x000000d0   0x000000d0   0x00000004   Code   RO          670    .ARM.Collect$$$$00002712  mc_p.l(entry2.o)
-    0x000000d4   0x000000d4   0x00000028   Code   RO          156  * .text               startup_mkl25z4.o
-    0x000000fc   0x000000fc   0x000000a4   Code   RO          410    .text               RTX_CM0.lib(irq_cm0.o)
-    0x000001a0   0x000001a0   0x0000002c   Code   RO          661    .text               mc_p.l(uidiv.o)
-    0x000001cc   0x000001cc   0x00000024   Code   RO          663    .text               mc_p.l(memcpya.o)
-    0x000001f0   0x000001f0   0x00000024   Code   RO          665    .text               mc_p.l(memseta.o)
-    0x00000214   0x00000214   0x00000024   Code   RO          683    .text               mc_p.l(init.o)
-    0x00000238   0x00000238   0x0000003a   Code   RO          693    .text               mc_p.l(__dczerorl.o)
-    0x00000272   0x00000272   0x0000004c   Code   RO          642    .text.MessageQueueGet  RTX_CM0.lib(rtx_msgqueue.o)
-    0x000002be   0x000002be   0x00000062   Code   RO          636    .text.MessageQueuePut  RTX_CM0.lib(rtx_msgqueue.o)
-    0x00000320   0x00000320   0x0000001e   Code   RO          634    .text.MessageQueueRemove  RTX_CM0.lib(rtx_msgqueue.o)
+    0x00000000   0x00000000   0x000000c0   Data   RO          195    RESET               startup_mkl25z4.o
+    0x000000c0   0x000000c0   0x00000000   Code   RO          699  * .ARM.Collect$$$$00000000  mc_p.l(entry.o)
+    0x000000c0   0x000000c0   0x00000004   Code   RO          710    .ARM.Collect$$$$00000001  mc_p.l(entry2.o)
+    0x000000c4   0x000000c4   0x00000004   Code   RO          713    .ARM.Collect$$$$00000004  mc_p.l(entry5.o)
+    0x000000c8   0x000000c8   0x00000000   Code   RO          715    .ARM.Collect$$$$00000008  mc_p.l(entry7b.o)
+    0x000000c8   0x000000c8   0x00000000   Code   RO          717    .ARM.Collect$$$$0000000A  mc_p.l(entry8b.o)
+    0x000000c8   0x000000c8   0x00000008   Code   RO          718    .ARM.Collect$$$$0000000B  mc_p.l(entry9a.o)
+    0x000000d0   0x000000d0   0x00000000   Code   RO          720    .ARM.Collect$$$$0000000D  mc_p.l(entry10a.o)
+    0x000000d0   0x000000d0   0x00000000   Code   RO          722    .ARM.Collect$$$$0000000F  mc_p.l(entry11a.o)
+    0x000000d0   0x000000d0   0x00000004   Code   RO          711    .ARM.Collect$$$$00002712  mc_p.l(entry2.o)
+    0x000000d4   0x000000d4   0x00000028   Code   RO          197  * .text               startup_mkl25z4.o
+    0x000000fc   0x000000fc   0x000000a4   Code   RO          451    .text               RTX_CM0.lib(irq_cm0.o)
+    0x000001a0   0x000001a0   0x0000002c   Code   RO          702    .text               mc_p.l(uidiv.o)
+    0x000001cc   0x000001cc   0x00000024   Code   RO          704    .text               mc_p.l(memcpya.o)
+    0x000001f0   0x000001f0   0x00000024   Code   RO          706    .text               mc_p.l(memseta.o)
+    0x00000214   0x00000214   0x00000024   Code   RO          724    .text               mc_p.l(init.o)
+    0x00000238   0x00000238   0x0000003a   Code   RO          734    .text               mc_p.l(__dczerorl.o)
+    0x00000272   0x00000272   0x0000004c   Code   RO          683    .text.MessageQueueGet  RTX_CM0.lib(rtx_msgqueue.o)
+    0x000002be   0x000002be   0x00000062   Code   RO          677    .text.MessageQueuePut  RTX_CM0.lib(rtx_msgqueue.o)
+    0x00000320   0x00000320   0x0000001e   Code   RO          675    .text.MessageQueueRemove  RTX_CM0.lib(rtx_msgqueue.o)
     0x0000033e   0x0000033e   0x00000002   PAD
-    0x00000340   0x00000340   0x0000000c   Code   RO          580    .text.OS_Tick_AcknowledgeIRQ  RTX_CM0.lib(os_systick.o)
-    0x0000034c   0x0000034c   0x0000002c   Code   RO          576    .text.OS_Tick_Enable  RTX_CM0.lib(os_systick.o)
-    0x00000378   0x00000378   0x00000006   Code   RO          582    .text.OS_Tick_GetIRQn  RTX_CM0.lib(os_systick.o)
+    0x00000340   0x00000340   0x0000000c   Code   RO          621    .text.OS_Tick_AcknowledgeIRQ  RTX_CM0.lib(os_systick.o)
+    0x0000034c   0x0000034c   0x0000002c   Code   RO          617    .text.OS_Tick_Enable  RTX_CM0.lib(os_systick.o)
+    0x00000378   0x00000378   0x00000006   Code   RO          623    .text.OS_Tick_GetIRQn  RTX_CM0.lib(os_systick.o)
     0x0000037e   0x0000037e   0x00000002   PAD
-    0x00000380   0x00000380   0x0000004c   Code   RO          574    .text.OS_Tick_Setup  RTX_CM0.lib(os_systick.o)
-    0x000003cc   0x000003cc   0x00000028   Code   RO          393    .text.osDelay       RTX_CM0.lib(rtx_delay.o)
-    0x000003f4   0x000003f4   0x00000002   Code   RO          195    .text.osRtxKernelPreInit  RTX_CM0.lib(rtx_kernel.o)
-    0x000003f6   0x000003f6   0x00000006   Code   RO          272    .text.osRtxThreadRegPtr  RTX_CM0.lib(rtx_thread.o)
-    0x000003fc   0x000003fc   0x00000002   Code   RO          688    i.__scatterload_null  mc_p.l(handlers.o)
+    0x00000380   0x00000380   0x0000004c   Code   RO          615    .text.OS_Tick_Setup  RTX_CM0.lib(os_systick.o)
+    0x000003cc   0x000003cc   0x00000028   Code   RO          434    .text.osDelay       RTX_CM0.lib(rtx_delay.o)
+    0x000003f4   0x000003f4   0x00000002   Code   RO          236    .text.osRtxKernelPreInit  RTX_CM0.lib(rtx_kernel.o)
+    0x000003f6   0x000003f6   0x00000006   Code   RO          313    .text.osRtxThreadRegPtr  RTX_CM0.lib(rtx_thread.o)
+    0x000003fc   0x000003fc   0x00000002   Code   RO          729    i.__scatterload_null  mc_p.l(handlers.o)
     0x000003fe   0x000003fe   0x00000002   PAD
-    0x00000400   0x00000400   0x00000010   Code   RO          155    .ARM.__at_0x400     startup_mkl25z4.o
-    0x00000410   0x00000410   0x0000004e   Code   RO          340    .text.ThreadFlagsCheck  RTX_CM0.lib(rtx_thread.o)
+    0x00000400   0x00000400   0x00000010   Code   RO          196    .ARM.__at_0x400     startup_mkl25z4.o
+    0x00000410   0x00000410   0x0000004e   Code   RO          381    .text.ThreadFlagsCheck  RTX_CM0.lib(rtx_thread.o)
     0x0000045e   0x0000045e   0x00000002   PAD
-    0x00000460   0x00000460   0x0000004c   Code   RO          431    .text.TimerInsert   RTX_CM0.lib(rtx_timer.o)
-    0x000004ac   0x000004ac   0x00000028   Code   RO          197    .text.osKernelInitialize  RTX_CM0.lib(rtx_kernel.o)
-    0x000004d4   0x000004d4   0x00000024   Code   RO          207    .text.osKernelStart  RTX_CM0.lib(rtx_kernel.o)
-    0x000004f8   0x000004f8   0x00000074   Code   RO          608    .text.osMessageQueueGet  RTX_CM0.lib(rtx_msgqueue.o)
-    0x0000056c   0x0000056c   0x00000024   Code   RO          602    .text.osMessageQueueNew  RTX_CM0.lib(rtx_msgqueue.o)
-    0x00000590   0x00000590   0x00000078   Code   RO          606    .text.osMessageQueuePut  RTX_CM0.lib(rtx_msgqueue.o)
-    0x00000608   0x00000608   0x0000007c   Code   RO          493    .text.osRtxMemoryAlloc  RTX_CM0.lib(rtx_memory.o)
-    0x00000684   0x00000684   0x0000004e   Code   RO          495    .text.osRtxMemoryFree  RTX_CM0.lib(rtx_memory.o)
-    0x000006d2   0x000006d2   0x00000032   Code   RO          491    .text.osRtxMemoryInit  RTX_CM0.lib(rtx_memory.o)
-    0x00000704   0x00000704   0x0000002e   Code   RO          508    .text.osRtxMemoryPoolAlloc  RTX_CM0.lib(rtx_mempool.o)
-    0x00000732   0x00000732   0x0000003a   Code   RO          510    .text.osRtxMemoryPoolFree  RTX_CM0.lib(rtx_mempool.o)
-    0x0000076c   0x0000076c   0x0000003e   Code   RO          506    .text.osRtxMemoryPoolInit  RTX_CM0.lib(rtx_mempool.o)
-    0x000007aa   0x000007aa   0x000000bc   Code   RO          632    .text.osRtxMessageQueuePostProcess  RTX_CM0.lib(rtx_msgqueue.o)
-    0x00000866   0x00000866   0x00000044   Code   RO          456    .text.osRtxMutexOwnerRelease  RTX_CM0.lib(rtx_mutex.o)
+    0x00000460   0x00000460   0x0000004c   Code   RO          472    .text.TimerInsert   RTX_CM0.lib(rtx_timer.o)
+    0x000004ac   0x000004ac   0x00000028   Code   RO          238    .text.osKernelInitialize  RTX_CM0.lib(rtx_kernel.o)
+    0x000004d4   0x000004d4   0x00000024   Code   RO          248    .text.osKernelStart  RTX_CM0.lib(rtx_kernel.o)
+    0x000004f8   0x000004f8   0x00000074   Code   RO          649    .text.osMessageQueueGet  RTX_CM0.lib(rtx_msgqueue.o)
+    0x0000056c   0x0000056c   0x00000024   Code   RO          643    .text.osMessageQueueNew  RTX_CM0.lib(rtx_msgqueue.o)
+    0x00000590   0x00000590   0x00000078   Code   RO          647    .text.osMessageQueuePut  RTX_CM0.lib(rtx_msgqueue.o)
+    0x00000608   0x00000608   0x0000007c   Code   RO          534    .text.osRtxMemoryAlloc  RTX_CM0.lib(rtx_memory.o)
+    0x00000684   0x00000684   0x0000004e   Code   RO          536    .text.osRtxMemoryFree  RTX_CM0.lib(rtx_memory.o)
+    0x000006d2   0x000006d2   0x00000032   Code   RO          532    .text.osRtxMemoryInit  RTX_CM0.lib(rtx_memory.o)
+    0x00000704   0x00000704   0x0000002e   Code   RO          549    .text.osRtxMemoryPoolAlloc  RTX_CM0.lib(rtx_mempool.o)
+    0x00000732   0x00000732   0x0000003a   Code   RO          551    .text.osRtxMemoryPoolFree  RTX_CM0.lib(rtx_mempool.o)
+    0x0000076c   0x0000076c   0x0000003e   Code   RO          547    .text.osRtxMemoryPoolInit  RTX_CM0.lib(rtx_mempool.o)
+    0x000007aa   0x000007aa   0x000000bc   Code   RO          673    .text.osRtxMessageQueuePostProcess  RTX_CM0.lib(rtx_msgqueue.o)
+    0x00000866   0x00000866   0x00000044   Code   RO          497    .text.osRtxMutexOwnerRelease  RTX_CM0.lib(rtx_mutex.o)
     0x000008aa   0x000008aa   0x00000002   PAD
-    0x000008ac   0x000008ac   0x00000080   Code   RO          561    .text.osRtxPendSV_Handler  RTX_CM0.lib(rtx_system.o)
-    0x0000092c   0x0000092c   0x0000006c   Code   RO          563    .text.osRtxPostProcess  RTX_CM0.lib(rtx_system.o)
-    0x00000998   0x00000998   0x00000038   Code   RO          280    .text.osRtxThreadBlock  RTX_CM0.lib(rtx_thread.o)
-    0x000009d0   0x000009d0   0x00000080   Code   RO          288    .text.osRtxThreadDelayInsert  RTX_CM0.lib(rtx_thread.o)
-    0x00000a50   0x00000a50   0x00000044   Code   RO          284    .text.osRtxThreadDelayRemove  RTX_CM0.lib(rtx_thread.o)
-    0x00000a94   0x00000a94   0x00000038   Code   RO          270    .text.osRtxThreadDelayTick  RTX_CM0.lib(rtx_thread.o)
-    0x00000acc   0x00000acc   0x00000050   Code   RO          278    .text.osRtxThreadDispatch  RTX_CM0.lib(rtx_thread.o)
-    0x00000b1c   0x00000b1c   0x00000054   Code   RO          364    .text.osRtxThreadFree  RTX_CM0.lib(rtx_thread.o)
-    0x00000b70   0x00000b70   0x00000014   Code   RO          262    .text.osRtxThreadListGet  RTX_CM0.lib(rtx_thread.o)
-    0x00000b84   0x00000b84   0x0000002c   Code   RO          260    .text.osRtxThreadListPut  RTX_CM0.lib(rtx_thread.o)
-    0x00000bb0   0x00000bb0   0x00000018   Code   RO          266    .text.osRtxThreadListRemove  RTX_CM0.lib(rtx_thread.o)
-    0x00000bc8   0x00000bc8   0x00000026   Code   RO          338    .text.osRtxThreadPostProcess  RTX_CM0.lib(rtx_thread.o)
+    0x000008ac   0x000008ac   0x00000080   Code   RO          602    .text.osRtxPendSV_Handler  RTX_CM0.lib(rtx_system.o)
+    0x0000092c   0x0000092c   0x0000006c   Code   RO          604    .text.osRtxPostProcess  RTX_CM0.lib(rtx_system.o)
+    0x00000998   0x00000998   0x00000038   Code   RO          321    .text.osRtxThreadBlock  RTX_CM0.lib(rtx_thread.o)
+    0x000009d0   0x000009d0   0x00000080   Code   RO          329    .text.osRtxThreadDelayInsert  RTX_CM0.lib(rtx_thread.o)
+    0x00000a50   0x00000a50   0x00000044   Code   RO          325    .text.osRtxThreadDelayRemove  RTX_CM0.lib(rtx_thread.o)
+    0x00000a94   0x00000a94   0x00000038   Code   RO          311    .text.osRtxThreadDelayTick  RTX_CM0.lib(rtx_thread.o)
+    0x00000acc   0x00000acc   0x00000050   Code   RO          319    .text.osRtxThreadDispatch  RTX_CM0.lib(rtx_thread.o)
+    0x00000b1c   0x00000b1c   0x00000054   Code   RO          405    .text.osRtxThreadFree  RTX_CM0.lib(rtx_thread.o)
+    0x00000b70   0x00000b70   0x00000014   Code   RO          303    .text.osRtxThreadListGet  RTX_CM0.lib(rtx_thread.o)
+    0x00000b84   0x00000b84   0x0000002c   Code   RO          301    .text.osRtxThreadListPut  RTX_CM0.lib(rtx_thread.o)
+    0x00000bb0   0x00000bb0   0x00000018   Code   RO          307    .text.osRtxThreadListRemove  RTX_CM0.lib(rtx_thread.o)
+    0x00000bc8   0x00000bc8   0x00000026   Code   RO          379    .text.osRtxThreadPostProcess  RTX_CM0.lib(rtx_thread.o)
     0x00000bee   0x00000bee   0x00000002   PAD
-    0x00000bf0   0x00000bf0   0x00000018   Code   RO          268    .text.osRtxThreadReadyPut  RTX_CM0.lib(rtx_thread.o)
-    0x00000c08   0x00000c08   0x0000002c   Code   RO          276    .text.osRtxThreadStackCheck  RTX_CM0.lib(rtx_thread.o)
-    0x00000c34   0x00000c34   0x00000040   Code   RO          290    .text.osRtxThreadStartup  RTX_CM0.lib(rtx_thread.o)
-    0x00000c74   0x00000c74   0x00000014   Code   RO          274    .text.osRtxThreadSwitch  RTX_CM0.lib(rtx_thread.o)
-    0x00000c88   0x00000c88   0x0000003c   Code   RO          286    .text.osRtxThreadWaitEnter  RTX_CM0.lib(rtx_thread.o)
-    0x00000cc4   0x00000cc4   0x00000022   Code   RO          282    .text.osRtxThreadWaitExit  RTX_CM0.lib(rtx_thread.o)
+    0x00000bf0   0x00000bf0   0x00000018   Code   RO          309    .text.osRtxThreadReadyPut  RTX_CM0.lib(rtx_thread.o)
+    0x00000c08   0x00000c08   0x0000002c   Code   RO          317    .text.osRtxThreadStackCheck  RTX_CM0.lib(rtx_thread.o)
+    0x00000c34   0x00000c34   0x00000040   Code   RO          331    .text.osRtxThreadStartup  RTX_CM0.lib(rtx_thread.o)
+    0x00000c74   0x00000c74   0x00000014   Code   RO          315    .text.osRtxThreadSwitch  RTX_CM0.lib(rtx_thread.o)
+    0x00000c88   0x00000c88   0x0000003c   Code   RO          327    .text.osRtxThreadWaitEnter  RTX_CM0.lib(rtx_thread.o)
+    0x00000cc4   0x00000cc4   0x00000022   Code   RO          323    .text.osRtxThreadWaitExit  RTX_CM0.lib(rtx_thread.o)
     0x00000ce6   0x00000ce6   0x00000002   PAD
-    0x00000ce8   0x00000ce8   0x00000074   Code   RO          559    .text.osRtxTick_Handler  RTX_CM0.lib(rtx_system.o)
-    0x00000d5c   0x00000d5c   0x0000003c   Code   RO          415    .text.osRtxTimerThread  RTX_CM0.lib(rtx_timer.o)
-    0x00000d98   0x00000d98   0x00000060   Code   RO          417    .text.osRtxTimerTick  RTX_CM0.lib(rtx_timer.o)
-    0x00000df8   0x00000df8   0x0000000c   Code   RO          322    .text.osThreadExit  RTX_CM0.lib(rtx_thread.o)
-    0x00000e04   0x00000e04   0x00000024   Code   RO          294    .text.osThreadNew   RTX_CM0.lib(rtx_thread.o)
-    0x00000e28   0x00000e28   0x00000012   Code   RO          397    .text.svcRtxDelay   RTX_CM0.lib(rtx_delay.o)
+    0x00000ce8   0x00000ce8   0x00000074   Code   RO          600    .text.osRtxTick_Handler  RTX_CM0.lib(rtx_system.o)
+    0x00000d5c   0x00000d5c   0x0000003c   Code   RO          456    .text.osRtxTimerThread  RTX_CM0.lib(rtx_timer.o)
+    0x00000d98   0x00000d98   0x00000060   Code   RO          458    .text.osRtxTimerTick  RTX_CM0.lib(rtx_timer.o)
+    0x00000df8   0x00000df8   0x0000000c   Code   RO          363    .text.osThreadExit  RTX_CM0.lib(rtx_thread.o)
+    0x00000e04   0x00000e04   0x00000024   Code   RO          335    .text.osThreadNew   RTX_CM0.lib(rtx_thread.o)
+    0x00000e28   0x00000e28   0x00000012   Code   RO          438    .text.svcRtxDelay   RTX_CM0.lib(rtx_delay.o)
     0x00000e3a   0x00000e3a   0x00000002   PAD
-    0x00000e3c   0x00000e3c   0x00000148   Code   RO          235    .text.svcRtxKernelInitialize  RTX_CM0.lib(rtx_kernel.o)
-    0x00000f84   0x00000f84   0x00000084   Code   RO          237    .text.svcRtxKernelStart  RTX_CM0.lib(rtx_kernel.o)
-    0x00001008   0x00001008   0x000000e8   Code   RO          644    .text.svcRtxMessageQueueGet  RTX_CM0.lib(rtx_msgqueue.o)
-    0x000010f0   0x000010f0   0x000001e4   Code   RO          630    .text.svcRtxMessageQueueNew  RTX_CM0.lib(rtx_msgqueue.o)
-    0x000012d4   0x000012d4   0x000000bc   Code   RO          640    .text.svcRtxMessageQueuePut  RTX_CM0.lib(rtx_msgqueue.o)
-    0x00001390   0x00001390   0x0000006c   Code   RO          368    .text.svcRtxThreadExit  RTX_CM0.lib(rtx_thread.o)
-    0x000013fc   0x000013fc   0x000001ec   Code   RO          292    .text.svcRtxThreadNew  RTX_CM0.lib(rtx_thread.o)
-    0x000015e8   0x000015e8   0x00000190   Code   RO          164    i.SystemCoreClockUpdate  system_mkl25z4.o
-    0x00001778   0x00001778   0x0000000c   Code   RO          165    i.SystemInit        system_mkl25z4.o
-    0x00001784   0x00001784   0x0000001c   Code   RO          143    i.__ARM_common_switch8  rtx_config.o
-    0x000017a0   0x000017a0   0x0000000e   Code   RO          687    i.__scatterload_copy  mc_p.l(handlers.o)
-    0x000017ae   0x000017ae   0x0000000e   Code   RO          689    i.__scatterload_zeroinit  mc_p.l(handlers.o)
-    0x000017bc   0x000017bc   0x000001ec   Code   RO            3    i.initGPIO          main.o
-    0x000019a8   0x000019a8   0x00000024   Code   RO            4    i.main              main.o
-    0x000019cc   0x000019cc   0x00000068   Code   RO            5    i.movingGreenLED    main.o
-    0x00001a34   0x00001a34   0x00000020   Code   RO          122    i.osRtxErrorNotify  rtx_config.o
-    0x00001a54   0x00001a54   0x00000004   Code   RO          123    i.osRtxIdleThread   rtx_config.o
-    0x00001a58   0x00001a58   0x00000064   Data   RO           92    .constdata          rtx_lib.o
-    0x00001abc   0x00001abc   0x000000a0   Data   RO           94    .rodata             rtx_lib.o
-    0x00001b5c   0x00001b5c   0x0000000b   Data   RO          249    .rodata.str1.4      RTX_CM0.lib(rtx_kernel.o)
-    0x00001b67   0x00001b67   0x00000001   PAD
-    0x00001b68   0x00001b68   0x00000020   Data   RO          685    Region$$Table       anon$$obj.o
+    0x00000e3c   0x00000e3c   0x00000148   Code   RO          276    .text.svcRtxKernelInitialize  RTX_CM0.lib(rtx_kernel.o)
+    0x00000f84   0x00000f84   0x00000084   Code   RO          278    .text.svcRtxKernelStart  RTX_CM0.lib(rtx_kernel.o)
+    0x00001008   0x00001008   0x000000e8   Code   RO          685    .text.svcRtxMessageQueueGet  RTX_CM0.lib(rtx_msgqueue.o)
+    0x000010f0   0x000010f0   0x000001e4   Code   RO          671    .text.svcRtxMessageQueueNew  RTX_CM0.lib(rtx_msgqueue.o)
+    0x000012d4   0x000012d4   0x000000bc   Code   RO          681    .text.svcRtxMessageQueuePut  RTX_CM0.lib(rtx_msgqueue.o)
+    0x00001390   0x00001390   0x0000006c   Code   RO          409    .text.svcRtxThreadExit  RTX_CM0.lib(rtx_thread.o)
+    0x000013fc   0x000013fc   0x000001ec   Code   RO          333    .text.svcRtxThreadNew  RTX_CM0.lib(rtx_thread.o)
+    0x000015e8   0x000015e8   0x00000190   Code   RO          205    i.SystemCoreClockUpdate  system_mkl25z4.o
+    0x00001778   0x00001778   0x0000000c   Code   RO          206    i.SystemInit        system_mkl25z4.o
+    0x00001784   0x00001784   0x0000001c   Code   RO          184    i.__ARM_common_switch8  rtx_config.o
+    0x000017a0   0x000017a0   0x0000000e   Code   RO          728    i.__scatterload_copy  mc_p.l(handlers.o)
+    0x000017ae   0x000017ae   0x0000000e   Code   RO          730    i.__scatterload_zeroinit  mc_p.l(handlers.o)
+    0x000017bc   0x000017bc   0x000001ec   Code   RO           84    i.initGPIOLED       colorhandler.o
+    0x000019a8   0x000019a8   0x00000024   Code   RO            3    i.main              main.o
+    0x000019cc   0x000019cc   0x00000008   Code   RO            4    i.movingGreenLED    main.o
+    0x000019d4   0x000019d4   0x00000020   Code   RO          163    i.osRtxErrorNotify  rtx_config.o
+    0x000019f4   0x000019f4   0x00000004   Code   RO          164    i.osRtxIdleThread   rtx_config.o
+    0x000019f8   0x000019f8   0x00000068   Code   RO           86    i.startMovingGreen  colorhandler.o
+    0x00001a60   0x00001a60   0x00000064   Data   RO          133    .constdata          rtx_lib.o
+    0x00001ac4   0x00001ac4   0x000000a0   Data   RO          135    .rodata             rtx_lib.o
+    0x00001b64   0x00001b64   0x0000000b   Data   RO          290    .rodata.str1.4      RTX_CM0.lib(rtx_kernel.o)
+    0x00001b6f   0x00001b6f   0x00000001   PAD
+    0x00001b70   0x00001b70   0x00000020   Data   RO          726    Region$$Table       anon$$obj.o
 
 
-    Execution Region ER_RW (Exec base: 0x1ffff000, Load base: 0x00001b88, Size: 0x000013f8, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00000034])
+    Execution Region ER_RW (Exec base: 0x1ffff000, Load base: 0x00001b90, Size: 0x000013f8, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00000034])
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x1ffff000   COMPRESSED   0x00001040   Data   RW           87    .bss.os             rtx_lib.o
-    0x20000040   COMPRESSED   0x00000034   Data   RW           88    .bss.os.msgqueue.cb  rtx_lib.o
-    0x20000074   COMPRESSED   0x00000050   Data   RW           89    .bss.os.msgqueue.mem  rtx_lib.o
-    0x200000c4   COMPRESSED   0x00000088   Data   RW           90    .bss.os.thread.cb   rtx_lib.o
+    0x1ffff000   COMPRESSED   0x00001040   Data   RW          128    .bss.os             rtx_lib.o
+    0x20000040   COMPRESSED   0x00000034   Data   RW          129    .bss.os.msgqueue.cb  rtx_lib.o
+    0x20000074   COMPRESSED   0x00000050   Data   RW          130    .bss.os.msgqueue.mem  rtx_lib.o
+    0x200000c4   COMPRESSED   0x00000088   Data   RW          131    .bss.os.thread.cb   rtx_lib.o
     0x2000014c   COMPRESSED   0x00000004   PAD
-    0x20000150   COMPRESSED   0x00000200   Data   RW           91    .bss.os.thread.stack  rtx_lib.o
-    0x20000350   COMPRESSED   0x00000004   Data   RW          166    .data               system_mkl25z4.o
-    0x20000354   COMPRESSED   0x000000a4   Data   RW          250    .data.os            RTX_CM0.lib(rtx_kernel.o)
+    0x20000150   COMPRESSED   0x00000200   Data   RW          132    .bss.os.thread.stack  rtx_lib.o
+    0x20000350   COMPRESSED   0x00000004   Data   RW          207    .data               system_mkl25z4.o
+    0x20000354   COMPRESSED   0x000000a4   Data   RW          291    .data.os            RTX_CM0.lib(rtx_kernel.o)
 
 
-    Execution Region ER_ZI (Exec base: 0x200003f8, Load base: 0x00001bbc, Size: 0x00000108, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Exec base: 0x200003f8, Load base: 0x00001bc4, Size: 0x00000108, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x200003f8        -       0x00000001   Zero   RW          592    .bss.PendST         RTX_CM0.lib(os_systick.o)
-    0x200003f9   0x00001bbc   0x00000007   PAD
-    0x20000400        -       0x00000100   Zero   RW          152    STACK               startup_mkl25z4.o
+    0x200003f8        -       0x00000001   Zero   RW          633    .bss.PendST         RTX_CM0.lib(os_systick.o)
+    0x200003f9   0x00001bc4   0x00000007   PAD
+    0x20000400        -       0x00000100   Zero   RW          193    STACK               startup_mkl25z4.o
 
 
 ==============================================================================
@@ -1457,14 +1471,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       632         32          0          0          0       9527   main.o
+       596         26          0          0          0        965   colorhandler.o
+        44          6          0          0          0       8984   main.o
         64          8          0          0          0       1001   rtx_config.o
          0          0        260       4940          0       9178   rtx_lib.o
         56         30        192          0        256        828   startup_mkl25z4.o
        412         42          0          4          0       1455   system_mkl25z4.o
 
     ----------------------------------------------------------------------
-      1164        112        484       4948        256      21989   Object Totals
+      1172        112        484       4948        256      22411   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          0          0          0          4          0          0   (incl. Padding)
 
@@ -1519,15 +1534,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      6552        394        496       5112        264     133541   Grand Totals
-      6552        394        496         52        264     133541   ELF Image Totals (compressed)
-      6552        394        496         52          0          0   ROM Totals
+      6560        394        496       5112        264     133919   Grand Totals
+      6560        394        496         52        264     133919   ELF Image Totals (compressed)
+      6560        394        496         52          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 7048 (   6.88kB)
+    Total RO  Size (Code + RO Data)                 7056 (   6.89kB)
     Total RW  Size (RW Data + ZI Data)              5376 (   5.25kB)
-    Total ROM Size (Code + RO Data + RW Data)       7100 (   6.93kB)
+    Total ROM Size (Code + RO Data + RW Data)       7108 (   6.94kB)
 
 ==============================================================================
 

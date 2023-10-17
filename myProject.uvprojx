@@ -387,6 +387,16 @@
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
             </File>
+            <File>
+              <FileName>colorHandler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\colorHandler.h</FilePath>
+            </File>
+            <File>
+              <FileName>colorHandler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\colorHandler.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
