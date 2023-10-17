@@ -1,12 +1,5 @@
 #define PWM_H
 
-enum pwm_pin {
-	PTB0 = 0,
-	PTB1 = 1,
-	PTB2 = 2,
-	PTB3 = 3
-};
-
 enum timer_pin {
 	TPM_1 = 1,
 	TPM_2 = 2
