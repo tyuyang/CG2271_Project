@@ -79,6 +79,7 @@ int main (void) {
   osKernelInitialize();                 // Initialize CMSIS-RTOS
   osThreadNew(motorCommandThread, NULL, NULL);
   osThreadNew(movingGreenLED, NULL, NULL);
+  osThreadNew(movingRedLED, NULL, NULL);
   osKernelStart();                      // Start thread execution
 	
   for (;;) {}
