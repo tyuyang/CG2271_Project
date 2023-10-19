@@ -34,14 +34,12 @@ void motorCommandThread (void *argument) {
 }
 
 void movingGreenLED (void *argument) {
-
   for (;;) {
 		startMovingGreen();
 	}
 }
 
 void stationGreenLED (void *argument) {
-	
 	 for (;;) {
 		startStationGreen();
 	}
