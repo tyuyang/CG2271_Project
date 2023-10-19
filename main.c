@@ -43,12 +43,11 @@ int main (void) {
   SystemCoreClockUpdate();
   // ...
 	initPWM();
-	
+  startMotors();
 	
 	delay(0xffffff);
 	
 	stopMotors();
-  startMotors();
  
   osKernelInitialize();                 // Initialize CMSIS-RTOS
   osThreadNew(motorCommandThread, NULL, NULL);    // Create application main thread
