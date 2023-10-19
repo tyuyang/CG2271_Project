@@ -8,6 +8,7 @@
 
 #include "MKL25Z4.h"                    // Device header
 #include "pwm.h"
+#include "colorHandler.h"
 
 #define MASK(x) (1 << (x))
 
@@ -28,6 +29,32 @@ void motorCommandThread (void *argument) {
 
 }
 
+void movingGreenLED (void *argument) {
+
+  for (;;) {
+		startMovingGreen();
+	}
+}
+
+void stationGreenLED (void *argument) {
+	
+	 for (;;) {
+		startStationGreen();
+	}
+}
+
+void movingRedLED (void *argument) {
+	 for (;;) {
+		 startSlowFlashRed();
+	 }
+}
+
+void stationRedLED (void *argument) {
+	 for (;;) {
+		 startFastFlashRed();
+	 }
+}
+
 
 static void delay(volatile uint32_t nof) {
   while(nof!=0) {
@@ -42,6 +69,7 @@ int main (void) {
   // System Initialization
   SystemCoreClockUpdate();
   // ...
+  initGPIOLED();
 	initPWM();
   startMotors();
 	
@@ -50,7 +78,8 @@ int main (void) {
 	stopMotors();
  
   osKernelInitialize();                 // Initialize CMSIS-RTOS
-  osThreadNew(motorCommandThread, NULL, NULL);    // Create application main thread
+  osThreadNew(motorCommandThread, NULL, NULL);
+  osThreadNew(movingGreenLED, NULL, NULL);
   osKernelStart();                      // Start thread execution
 	
   for (;;) {}
