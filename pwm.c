@@ -94,6 +94,13 @@ void changeFrequency(int frequency, int timer, int channel) {
 	}
 }
 
+void startMotors(void) {
+	TPM1_C0V = 3750;
+	TPM1_C1V = 3750;
+	TPM2_C0V = 3750;
+	TPM2_C1V = 3750;
+}
+
 void stopMotors(void) {
 	TPM1_C0V = 0;
 	TPM1_C1V = 0;

@@ -43,14 +43,12 @@ int main (void) {
   SystemCoreClockUpdate();
   // ...
 	initPWM();
-	TPM1_C0V = 3750;
-	TPM1_C1V = 3750;
-	TPM2_C0V = 3750;
-	TPM2_C1V = 3750;
+	
 	
 	delay(0xffffff);
 	
 	stopMotors();
+  startMotors();
  
   osKernelInitialize();                 // Initialize CMSIS-RTOS
   osThreadNew(motorCommandThread, NULL, NULL);    // Create application main thread
