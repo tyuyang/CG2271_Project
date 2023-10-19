@@ -9,24 +9,24 @@
 #include "MKL25Z4.h"                    // Device header
 #include "pwm.h"
 
+#define MASK(x) (1 << (x))
 
+// Not used as of now
+// #define PTB0_Pin 0
+// #define PTB1_Pin 1
+// #define PTB2_Pin 2
+// #define PTB3_Pin 3
+
+// #define TPM_1 1
+// #define TPM_2 2
 
 /*----------------------------------------------------------------------------
  * Application main thread
  *---------------------------------------------------------------------------*/
-void app_main (void *argument) {
- 
-  // ...
+void motorCommandThread (void *argument) {
   for (;;) {}
+
 }
-
-#define PTB0_Pin 0
-#define PTB1_Pin 1
-#define PTB2_Pin 2
-#define PTB3_Pin 3
-
-#define TPM_1 1
-#define TPM_2 2
 
 
 static void delay(volatile uint32_t nof) {
@@ -53,7 +53,7 @@ int main (void) {
 	stopMotors();
  
   osKernelInitialize();                 // Initialize CMSIS-RTOS
-  osThreadNew(app_main, NULL, NULL);    // Create application main thread
+  osThreadNew(motorCommandThread, NULL, NULL);    // Create application main thread
   osKernelStart();                      // Start thread execution
 	
   for (;;) {}
