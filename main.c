@@ -40,7 +40,7 @@ void motorCommandThread (void *argument) {
 
 void movingGreenLED (void *argument) {
   for (;;) {
-    osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
+    osThreadFlagsWait(0x0001, osFlagsNoClear, osWaitForever);
 		startMovingGreen();
 	}
 }
@@ -48,14 +48,14 @@ void movingGreenLED (void *argument) {
 void stationGreenLED (void *argument) {
   osThreadFlagsSet(tIdStationGreen, 0x0001);
 	 for (;;) {
-    osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
+    osThreadFlagsWait(0x0001, osFlagsNoClear, osWaitForever);
 		startStationGreen();
 	}
 }
 
 void movingRedLED (void *argument) {
 	 for (;;) {
-    osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
+    osThreadFlagsWait(0x0001, osFlagsNoClear, osWaitForever);
 		startSlowFlashRed();
 	}
 }
@@ -63,7 +63,7 @@ void movingRedLED (void *argument) {
 void stationRedLED (void *argument) {
   osThreadFlagsSet(tIdStationRed, 0x0001);
 	for (;;) {
-    osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
+    osThreadFlagsWait(0x0001, osFlagsNoClear, osWaitForever);
 		startFastFlashRed();
 	}
 }
