@@ -25,8 +25,12 @@
  * Application main thread
  *---------------------------------------------------------------------------*/
 void motorCommandThread (void *argument) {
-  for (;;) {}
-
+  for (;;) {
+    startMotors();
+    osDelay(500);
+    stopMotors();
+    osDelay(500);
+  }
 }
 
 void movingGreenLED (void *argument) {
@@ -71,9 +75,6 @@ int main (void) {
   // ...
   initGPIOLED();
 	initPWM();
-  startMotors();
-	
-	delay(0xffffff);
 	
 	stopMotors();
  
