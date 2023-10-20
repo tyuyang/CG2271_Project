@@ -30,11 +30,27 @@ osEventFlagsId_t movingRedFlag;
 osEventFlagsId_t stationGreenFlag;
 osEventFlagsId_t stationRedFlag;
 
+void motorMovingFlagsSet() {
+  osThreadFlagsSet(tIdMovingGreen, 0x0001);
+  osThreadFlagsSet(tIdMovingRed, 0x0001);
+  osThreadFlagsClear(tIdStationRed);
+  osThreadFlagsClear(tIdStationGreen);
+}
+
+void motorStopFlagsSet() {
+  osThreadFlagsSet(tIdStationGreen, 0x0001);
+  osThreadFlagsSet(tIdStationRed, 0x0001);
+  osThreadFlagsClear(tIdMovingRed);
+  osThreadFlagsClear(tIdMovingGreen);
+}
+
 void motorCommandThread (void *argument) {
   for (;;) {
     startMotors();
+    motorMovingFlagsSet();
     osDelay(500);
     stopMotors();
+    motorStopFlagsSet();
     osDelay(500);
   }
 }
