@@ -8,7 +8,7 @@
 
 #include "MKL25Z4.h"                    // Device header
 #include "pwm.h"
-
+#include "motor_control.h"
 
 
 /*----------------------------------------------------------------------------
@@ -17,17 +17,13 @@
 void app_main (void *argument) {
  
   // ...
-  for (;;) {}
+  for (;;) {
+		moveForward();
+		osDelay(1000);
+		stopMotors();
+		osDelay(1000);
+	}
 }
-
-#define PTB0_Pin 0
-#define PTB1_Pin 1
-#define PTB2_Pin 2
-#define PTB3_Pin 3
-
-#define TPM_1 1
-#define TPM_2 2
-
 
 static void delay(volatile uint32_t nof) {
   while(nof!=0) {
@@ -43,15 +39,16 @@ int main (void) {
   SystemCoreClockUpdate();
   // ...
 	initPWM();
+	
+	/*
 	TPM1_C0V = 3750;
 	TPM1_C1V = 3750;
 	TPM2_C0V = 3750;
 	TPM2_C1V = 3750;
 	
 	delay(0xffffff);
+	*/
 	
-	stopMotors();
- 
   osKernelInitialize();                 // Initialize CMSIS-RTOS
   osThreadNew(app_main, NULL, NULL);    // Create application main thread
   osKernelStart();                      // Start thread execution
