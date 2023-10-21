@@ -41,34 +41,32 @@ void motorCommandThread (void *argument) {
 
 void movingGreenLED (void *argument) {
   for (;;) {
+    osEventFlagsWait(movingGreenFlag, 0x0001, osFlagsNoClear, osWaitForever);
 		startMovingGreen();
 	}
 }
 
 void stationGreenLED (void *argument) {
+  osEventFlagsSet(stationGreenFlag, 0x0001);
 	 for (;;) {
+    osEventFlagsWait(stationGreenFlag, 0x0001, osFlagsNoClear, osWaitForever);
 		startStationGreen();
 	}
 }
 
 void movingRedLED (void *argument) {
 	 for (;;) {
+    osEventFlagsWait(movingRedFlag, 0x0001, osFlagsNoClear, osWaitForever);
 		startSlowFlashRed();
 	}
 }
 
 void stationRedLED (void *argument) {
+  osEventFlagsSet(stationRedFlag, 0x0001);
 	for (;;) {
+    osEventFlagsWait(stationRedFlag, 0x0001, osFlagsNoClear, osWaitForever);
 		startFastFlashRed();
 	}
-}
-
-
-static void delay(volatile uint32_t nof) {
-  while(nof!=0) {
-    __asm("NOP");
-    nof--;
-  }
 }
 
 
