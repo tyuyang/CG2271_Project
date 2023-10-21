@@ -21,11 +21,6 @@
 // #define TPM_1 1
 // #define TPM_2 2
 
-osThreadId_t tIdMovingGreen;
-osThreadId_t tIdStationGreen;
-osThreadId_t tIdMovingRed;
-osThreadId_t tIdStationRed;
-
 /*----------------------------------------------------------------------------
  * Application main thread
  *---------------------------------------------------------------------------*/
@@ -40,30 +35,24 @@ void motorCommandThread (void *argument) {
 
 void movingGreenLED (void *argument) {
   for (;;) {
-    osThreadFlagsWait(0x0001, osFlagsNoClear, osWaitForever);
 		startMovingGreen();
 	}
 }
 
 void stationGreenLED (void *argument) {
-  osThreadFlagsSet(tIdStationGreen, 0x0001);
 	 for (;;) {
-    osThreadFlagsWait(0x0001, osFlagsNoClear, osWaitForever);
 		startStationGreen();
 	}
 }
 
 void movingRedLED (void *argument) {
 	 for (;;) {
-    osThreadFlagsWait(0x0001, osFlagsNoClear, osWaitForever);
 		startSlowFlashRed();
 	}
 }
 
 void stationRedLED (void *argument) {
-  osThreadFlagsSet(tIdStationRed, 0x0001);
 	for (;;) {
-    osThreadFlagsWait(0x0001, osFlagsNoClear, osWaitForever);
 		startFastFlashRed();
 	}
 }
@@ -84,15 +73,13 @@ int main (void) {
   // ...
   initGPIOLED();
 	initPWM();
-	
-	stopMotors();
  
   osKernelInitialize();                 // Initialize CMSIS-RTOS
   osThreadNew(motorCommandThread, NULL, NULL);
-  tIdMovingGreen = osThreadNew(movingGreenLED, NULL, NULL);
-  tIdMovingRed = osThreadNew(movingRedLED, NULL, NULL);
-  tIdStationRed = osThreadNew(stationRedLED, NULL, NULL);
-  tIdStationGreen = osThreadNew(stationRedLED, NULL, NULL);
+  osThreadNew(movingGreenLED, NULL, NULL);
+  osThreadNew(movingRedLED, NULL, NULL);
+  osThreadNew(stationRedLED, NULL, NULL);
+  osThreadNew(stationRedLED, NULL, NULL);
   osKernelStart();                      // Start thread execution
 	
   for (;;) {}
