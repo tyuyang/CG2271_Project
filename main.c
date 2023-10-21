@@ -24,6 +24,12 @@
 /*----------------------------------------------------------------------------
  * Application main thread
  *---------------------------------------------------------------------------*/
+
+osEventFlagsId_t movingGreenFlag;
+osEventFlagsId_t movingRedFlag;
+osEventFlagsId_t stationGreenFlag;
+osEventFlagsId_t stationRedFlag;
+
 void motorCommandThread (void *argument) {
   for (;;) {
     startMotors();
@@ -75,6 +81,13 @@ int main (void) {
 	initPWM();
  
   osKernelInitialize();                 // Initialize CMSIS-RTOS
+
+  // Creating the led event flags
+  movingGreenFlag = osEventFlagsNew(NULL);
+  movingRedFlag = osEventFlagsNew(NULL);
+  stationGreenFlag = osEventFlagsNew(NULL);
+  stationRedFlag = osEventFlagsNew(NULL);
+
   osThreadNew(motorCommandThread, NULL, NULL);
   osThreadNew(movingGreenLED, NULL, NULL);
   osThreadNew(movingRedLED, NULL, NULL);
