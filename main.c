@@ -63,7 +63,6 @@ void movingGreenLED (void *argument) {
 }
 
 void stationGreenLED (void *argument) {
-  osEventFlagsSet(stationGreenFlag, 0x0001);
 	 for (;;) {
     osEventFlagsWait(stationGreenFlag, 0x0001, osFlagsNoClear, osWaitForever);
 		startStationGreen();
@@ -78,7 +77,6 @@ void movingRedLED (void *argument) {
 }
 
 void stationRedLED (void *argument) {
-  osEventFlagsSet(stationRedFlag, 0x0001);
 	for (;;) {
     osEventFlagsWait(stationRedFlag, 0x0001, osFlagsNoClear, osWaitForever);
 		startFastFlashRed();
