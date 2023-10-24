@@ -32,14 +32,14 @@ volatile unsigned char cmd;
  * Application main thread
  *---------------------------------------------------------------------------*/
  
-void motorMovingFlagsSet() {
+void motorMovingFlagsSet(void* argument) {
   osEventFlagsSet(movingGreenFlag, 0x0001);
   osEventFlagsSet(movingRedFlag, 0x0001);
   osEventFlagsClear(stationGreenFlag,0x0001);
   osEventFlagsClear(stationRedFlag,0x0001);
 }
 
-void motorStopFlagsSet() {
+void motorStopFlagsSet(void* argument) {
   osEventFlagsSet(stationGreenFlag, 0x0001);
   osEventFlagsSet(stationRedFlag, 0x0001);
   osEventFlagsClear(movingGreenFlag,0x0001);
@@ -92,28 +92,35 @@ void motorThread (void *argument) {
     if ((cmd & 0x02) == 0x02) {
 		  // forward
       moveForward();
+      motorMovingFlagsSet()
 	  }
 	  else if ((cmd & 0x01) == 0x01) {
 		  // backward
       moveBackward();
+      motorMovingFlagsSet()
 	  }
 	  else if ((cmd & 0x08) == 0x08) {
 		  // left
       rotateLeft();
+      motorMovingFlagsSet()
 	  }
 	  else if ((cmd & 0x04) == 0x04) {
 	  	// right
       rotateRight();
+      motorMovingFlagsSet()
 	  }
 	  else if ((cmd & 0x0a) == 0x0a) {
 	  	// forward left
       forwardLeft();
+      motorMovingFlagsSet()
 	  }
 	  else if ((cmd & 0x06) == 0x06) {
 	  	// forward right
       forwardRight();
+      motorMovingFlagsSet()
 	  } else {
       stopMotors();
+      motorStopFlagsSet()
     }
   }
 }
