@@ -7,8 +7,6 @@ typedef struct {
 	unsigned int Size;
 } Q_T;
 
-Q_T tx_q, rx_q;
-
 void Q_Init(Q_T *q) {
 	unsigned int i;
 	for (i=0; i<Q_SIZE; i++) {

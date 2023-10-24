@@ -11,11 +11,19 @@
 #include "motor_control.h"
 #include "colorHandler.h"
 #include "buzzer.h"
+#include "uart.c"
+
+#define BAUD_RATE 9600
 
 osEventFlagsId_t movingGreenFlag;
 osEventFlagsId_t movingRedFlag;
 osEventFlagsId_t stationGreenFlag;
 osEventFlagsId_t stationRedFlag;
+
+osSemaphoreId_t uartThreadActivate;
+
+static volatile Q_T tx_q, rx_q;
+unsigned char cmd;
 
 /*----------------------------------------------------------------------------
  * Application main thread
@@ -49,6 +57,7 @@ void UART1_IRQHandler(void) {
 	if (UART1->S1 & UART_S1_RDRF_MASK) {
 		if (!Q_Full(&rx_q)) {
 			Q_Enqueue(&rx_q, UART1->D);
+      osSemaphoreRelease(uartThreadActivate); //Activates uartThread to run once
 		}
 	}
 	// error
@@ -58,8 +67,17 @@ void UART1_IRQHandler(void) {
 	}
 }
 
+void uartThread(void* argument) {
+  for (;;) {
+    osSemaphoreAcquire(uartThreadActivate, osWaitForever);
+	  unsigned char cmd = Q_Dequeue(&rx_q);
+    if (((cmd & onMusicCommand) == onMusicCommand) || ((cmd & offMusicCommand) == offMusicCommand)) { // To be edited
+      osSemaphoreRelease(buzzerThread);
+    }
+  }
+}
+
 void commandHandler(Q_T *q) {
-	unsigned char cmd = Q_Dequeue(q);
 	//buzzer(cmd)
 	if ((cmd & 0x02) == 0x02) {
 		// forward
@@ -83,12 +101,7 @@ void commandHandler(Q_T *q) {
 
 void motorThread (void *argument) {
   for (;;) {
-    moveForward();
-    motorMovingFlagsSet();
-    osDelay(2000);
-    stopMotors();
-    motorStopFlagsSet();
-    osDelay(2000);
+    
   }
 }
 
@@ -137,6 +150,7 @@ int main (void) {
 	initPWM();
 	initGPIOLED();
 	initBuzzerPWM();
+  initUART1(BAUD_RATE);
 	
 	TPM1_C0V = 3750;
 	/*
@@ -155,12 +169,15 @@ int main (void) {
   movingRedFlag = osEventFlagsNew(NULL);
   stationGreenFlag = osEventFlagsNew(NULL);
   stationRedFlag = osEventFlagsNew(NULL);
+  uartThreadActivate = osSemaphoreNew(32, 0, NULL);
+
 	
   osThreadNew(motorThread, NULL, NULL);    // Create application main thread
 	osThreadNew(movingGreenLED, NULL, NULL);
   osThreadNew(movingRedLED, NULL, NULL);
   osThreadNew(stationGreenLED, NULL, NULL);
   osThreadNew(stationRedLED, NULL, NULL);
+  osThreadNew(uartThread, NULL, NULL);
   osKernelStart();                      // Start thread execution
 	
   for (;;) {}

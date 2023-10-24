@@ -1,9 +1,8 @@
+#include "MKL25Z4.h"
 #include "RTE_Components.h"
 #include  CMSIS_device_header
 #include "cmsis_os2.h"
 #include "queue.h"
-
-#define BAUD_RATE 9600
  
 /*----------------------------------------------------------------------------
  * Application main thread
