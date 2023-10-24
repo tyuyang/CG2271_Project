@@ -35,6 +35,52 @@ void motorStopFlagsSet() {
   osEventFlagsClear(movingRedFlag,0x0001);
 }
 
+void UART1_IRQHandler(void) {
+	NVIC_ClearPendingIRQ(UART1_IRQn);
+	// TX
+	if (UART1->S1 & UART_S1_TDRE_MASK) {
+		if (!Q_Empty(&tx_q)) {
+			UART1->D =  Q_Dequeue(&tx_q);
+		} else {
+			UART1->C2 &= ~UART_C2_TE_MASK;
+		}
+	}
+	// RX
+	if (UART1->S1 & UART_S1_RDRF_MASK) {
+		if (!Q_Full(&rx_q)) {
+			Q_Enqueue(&rx_q, UART1->D);
+		}
+	}
+	// error
+	if (UART1->S1 & (UART_S1_OR_MASK | UART_S1_NF_MASK | UART_S1_FE_MASK | UART_S1_PF_MASK)) {
+		unsigned char foo;
+		foo = UART1->D;
+	}
+}
+
+void commandHandler(Q_T *q) {
+	unsigned char cmd = Q_Dequeue(q);
+	//buzzer(cmd)
+	if ((cmd & 0x02) == 0x02) {
+		// forward
+	}
+	else if ((cmd & 0x01) == 0x01) {
+		// backward
+	}
+	else if ((cmd & 0x08) == 0x08) {
+		// left
+	}
+	else if ((cmd & 0x04) == 0x04) {
+		// right
+	}
+	else if ((cmd & 0x0a) == 0x0a) {
+		// forward left
+	}
+	else if ((cmd & 0x06) == 0x06) {
+		// forward right
+	}
+}
+
 void motorThread (void *argument) {
   for (;;) {
     moveForward();
