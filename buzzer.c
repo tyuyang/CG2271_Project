@@ -28,6 +28,7 @@ void initBuzzerPWM(void) {
 	
 	TPM0_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
 	TPM0_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
+	TPM0_C1V = 0;
 }
 
 void calculateModValue(int frequency) {
@@ -39,9 +40,69 @@ void calculateCnvValue() {
 	cnvValue = modValue / 2;
 }
 
-void changeBuzzerFrequency(int frequency) {
+void changeFrequency(int frequency) {
 	calculateModValue(frequency);
 	calculateCnvValue();
-	TPM1->MOD = modValue;
-	TPM1_C0V = cnvValue;
+	TPM0->MOD = modValue;
+	TPM0_C0V = cnvValue;
+}
+
+void controlEndBuzzer(void *argument) {
+	// end music - rickroll
+		changeFrequency(784); // f
+		osDelay(1000);
+		changeFrequency(880); // g
+		osDelay(1000);
+		changeFrequency(0);
+		osDelay(10);
+		changeFrequency(880); // g
+		osDelay(1000);
+		changeFrequency(988); // a
+		osDelay(1000);
+		
+		changeFrequency(1760); // g 1 octave
+		osDelay(250);
+		changeFrequency(1567); // f
+		osDelay(250);
+		changeFrequency(1482); // e
+		osDelay(500);
+		
+		changeFrequency(784); // f
+		osDelay(1000);
+		changeFrequency(880); // g
+		osDelay(1000);
+		changeFrequency(0);
+		osDelay(10);
+		changeFrequency(880); // g
+		osDelay(2000);
+}
+
+void controlBuzzer(void *argument) {
+	//run mode - danny Minecraft
+	changeFrequency(880); // g
+	osDelay(1000);
+	changeFrequency(988); // a
+	osDelay(1000);
+	changeFrequency(1109); // b
+	osDelay(1000);
+	changeFrequency(1176); // c
+	osDelay(1000);
+	changeFrequency(880); // g
+	osDelay(1000);
+	changeFrequency(988); // a
+	osDelay(1000);
+	changeFrequency(1109); // b
+	osDelay(1000);
+	changeFrequency(1320); // d
+	osDelay(1000);
+	changeFrequency(1176); // c
+	osDelay(1000);
+	changeFrequency(1109); // b
+	osDelay(1000);
+	changeFrequency(1176); // c
+	osDelay(1000);
+	changeFrequency(1320); // d
+	osDelay(1000);
+	changeFrequency(880); // g
+	osDelay(4000);
 }

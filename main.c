@@ -20,6 +20,8 @@ osEventFlagsId_t movingRedFlag;
 osEventFlagsId_t stationGreenFlag;
 osEventFlagsId_t stationRedFlag;
 
+volatile int musicCmd;
+
 osSemaphoreId_t uartThreadActivate;
 
 static volatile Q_T tx_q, rx_q;
@@ -141,6 +143,17 @@ void stationRedLED (void *argument) {
 	}
 }
 
+void buzzerThread(void *argument) {
+  // Default dont play music, then play on start and play end music on stop
+  for(;;) {
+    if (musicCmd == 1) {
+      controlBuzzer();
+    } else if (musicCmd == 2) {
+      controlEndBuzzer();
+    }
+  }
+}
+
 
 int main (void) {
 	
@@ -161,6 +174,7 @@ int main (void) {
 	
 	delay(0xffffff);
 	*/
+  musicCmd = 0;
 	
   osKernelInitialize();                 // Initialize CMSIS-RTOS
 	
@@ -177,6 +191,7 @@ int main (void) {
   osThreadNew(movingRedLED, NULL, NULL);
   osThreadNew(stationGreenLED, NULL, NULL);
   osThreadNew(stationRedLED, NULL, NULL);
+  osThreadNew(buzzerThread, NULL, NULL);
   osThreadNew(uartThread, NULL, NULL);
   osKernelStart();                      // Start thread execution
 	
