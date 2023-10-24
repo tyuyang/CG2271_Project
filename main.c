@@ -8,28 +8,19 @@
 
 #include "MKL25Z4.h"                    // Device header
 #include "pwm.h"
+#include "motor_control.h"
 #include "colorHandler.h"
-
-#define MASK(x) (1 << (x))
-
-// Not used as of now
-// #define PTB0_Pin 0
-// #define PTB1_Pin 1
-// #define PTB2_Pin 2
-// #define PTB3_Pin 3
-
-// #define TPM_1 1
-// #define TPM_2 2
-
-/*----------------------------------------------------------------------------
- * Application main thread
- *---------------------------------------------------------------------------*/
+#include "buzzer.h"
 
 osEventFlagsId_t movingGreenFlag;
 osEventFlagsId_t movingRedFlag;
 osEventFlagsId_t stationGreenFlag;
 osEventFlagsId_t stationRedFlag;
 
+/*----------------------------------------------------------------------------
+ * Application main thread
+ *---------------------------------------------------------------------------*/
+ 
 void motorMovingFlagsSet() {
   osEventFlagsSet(movingGreenFlag, 0x0001);
   osEventFlagsSet(movingRedFlag, 0x0001);
@@ -44,14 +35,22 @@ void motorStopFlagsSet() {
   osEventFlagsClear(movingRedFlag,0x0001);
 }
 
-void motorCommandThread (void *argument) {
+void motorThread (void *argument) {
   for (;;) {
-    startMotors();
+    moveForward();
     motorMovingFlagsSet();
-    osDelay(500);
+    osDelay(2000);
     stopMotors();
     motorStopFlagsSet();
-    osDelay(500);
+    osDelay(2000);
+  }
+}
+
+
+static void delay(volatile uint32_t nof) {
+  while(nof!=0) {
+    __asm("NOP");
+    nof--;
   }
 }
 
@@ -89,21 +88,32 @@ int main (void) {
   // System Initialization
   SystemCoreClockUpdate();
   // ...
-  initGPIOLED();
 	initPWM();
- 
+	initGPIOLED();
+	initBuzzerPWM();
+	
+	TPM1_C0V = 3750;
+	/*
+	TPM1_C0V = 3750;
+	TPM1_C1V = 3750;
+	TPM2_C0V = 3750;
+	TPM2_C1V = 3750;
+	
+	delay(0xffffff);
+	*/
+	
   osKernelInitialize();                 // Initialize CMSIS-RTOS
-
-  // Creating the led event flags
+	
+	// Creating the led event flags
   movingGreenFlag = osEventFlagsNew(NULL);
   movingRedFlag = osEventFlagsNew(NULL);
   stationGreenFlag = osEventFlagsNew(NULL);
   stationRedFlag = osEventFlagsNew(NULL);
-
-  osThreadNew(motorCommandThread, NULL, NULL);
-  osThreadNew(movingGreenLED, NULL, NULL);
+	
+  osThreadNew(motorThread, NULL, NULL);    // Create application main thread
+	osThreadNew(movingGreenLED, NULL, NULL);
   osThreadNew(movingRedLED, NULL, NULL);
-  osThreadNew(stationRedLED, NULL, NULL);
+  osThreadNew(stationGreenLED, NULL, NULL);
   osThreadNew(stationRedLED, NULL, NULL);
   osKernelStart();                      // Start thread execution
 	
