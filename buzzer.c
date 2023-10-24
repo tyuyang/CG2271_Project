@@ -106,3 +106,7 @@ void controlBuzzer(void *argument) {
 	changeFrequency(880); // g
 	osDelay(4000);
 }
+
+void stopBuzzer(void *argument) {
+	TPM0_C1V = 0;
+}

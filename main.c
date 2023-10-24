@@ -23,9 +23,10 @@ osEventFlagsId_t stationRedFlag;
 volatile int musicCmd;
 
 osSemaphoreId_t uartThreadActivate;
+osSemaphoreId_t motorThreadActivate;
 
 static volatile Q_T tx_q, rx_q;
-unsigned char cmd;
+volatile unsigned char cmd;
 
 /*----------------------------------------------------------------------------
  * Application main thread
@@ -73,37 +74,47 @@ void uartThread(void* argument) {
   for (;;) {
     osSemaphoreAcquire(uartThreadActivate, osWaitForever);
 	  unsigned char cmd = Q_Dequeue(&rx_q);
-    if (((cmd & onMusicCommand) == onMusicCommand) || ((cmd & offMusicCommand) == offMusicCommand)) { // To be edited
-      osSemaphoreRelease(buzzerThread);
+    if ((cmd & 0x10) == 0x10) { // To be edited
+      musicCmd = 1;
+    } else if ((cmd & 0x20) == 0x20) {
+      musicCmd = 2;
+    } else if ((cmd | 0xcf) == 0xcf) {
+      musicCmd = 0;
+    } else {
+      osSemaphoreRelease(motorThreadActivate);
     }
   }
 }
 
-void commandHandler(Q_T *q) {
-	//buzzer(cmd)
-	if ((cmd & 0x02) == 0x02) {
-		// forward
-	}
-	else if ((cmd & 0x01) == 0x01) {
-		// backward
-	}
-	else if ((cmd & 0x08) == 0x08) {
-		// left
-	}
-	else if ((cmd & 0x04) == 0x04) {
-		// right
-	}
-	else if ((cmd & 0x0a) == 0x0a) {
-		// forward left
-	}
-	else if ((cmd & 0x06) == 0x06) {
-		// forward right
-	}
-}
-
 void motorThread (void *argument) {
   for (;;) {
-    
+    osSemaphoreAcquire(motorThreadActivate, osWaitForever);
+    if ((cmd & 0x02) == 0x02) {
+		  // forward
+      moveForward();
+	  }
+	  else if ((cmd & 0x01) == 0x01) {
+		  // backward
+      moveBackward();
+	  }
+	  else if ((cmd & 0x08) == 0x08) {
+		  // left
+      rotateLeft();
+	  }
+	  else if ((cmd & 0x04) == 0x04) {
+	  	// right
+      rotateRight();
+	  }
+	  else if ((cmd & 0x0a) == 0x0a) {
+	  	// forward left
+      forwardLeft();
+	  }
+	  else if ((cmd & 0x06) == 0x06) {
+	  	// forward right
+      forwardRight();
+	  } else {
+      stopMotors();
+    }
   }
 }
 
@@ -150,6 +161,8 @@ void buzzerThread(void *argument) {
       controlBuzzer();
     } else if (musicCmd == 2) {
       controlEndBuzzer();
+    } else if (musicCmd == 0) {
+      stopBuzzer();
     }
   }
 }
@@ -165,7 +178,7 @@ int main (void) {
 	initBuzzerPWM();
   initUART1(BAUD_RATE);
 	
-	TPM1_C0V = 3750;
+	stopMotors();
 	/*
 	TPM1_C0V = 3750;
 	TPM1_C1V = 3750;
@@ -183,7 +196,10 @@ int main (void) {
   movingRedFlag = osEventFlagsNew(NULL);
   stationGreenFlag = osEventFlagsNew(NULL);
   stationRedFlag = osEventFlagsNew(NULL);
+
+  // Creating uart and motor semaphores to activate threads
   uartThreadActivate = osSemaphoreNew(32, 0, NULL);
+  motorThreadActivate = osSemaphoreNew(1, 0, NULL);
 
 	
   osThreadNew(motorThread, NULL, NULL);    // Create application main thread
@@ -193,6 +209,15 @@ int main (void) {
   osThreadNew(stationRedLED, NULL, NULL);
   osThreadNew(buzzerThread, NULL, NULL);
   osThreadNew(uartThread, NULL, NULL);
+
+  osThreadSetPriority(motorThread, osPriorityHigh);
+  osThreadSetPriority(movingGreenLED, osPriorityNormal);
+  osThreadSetPriority(movingRedLED, osPriorityNormal);
+  osThreadSetPriority(stationGreenLED, osPriorityNormal);
+  osThreadSetPriority(stationRedLED, osPriorityNormal);
+  osThreadSetPriority(buzzerThread, osPriorityNormal);
+  osThreadSetPriority(uartThread, osPriorityHigh);
+
   osKernelStart();                      // Start thread execution
 	
   for (;;) {}
