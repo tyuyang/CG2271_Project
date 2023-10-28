@@ -153,6 +153,13 @@ int main(void)
   osThreadNew(stationGreenLED, NULL, NULL);
   osThreadNew(stationRedLED, NULL, NULL);
 
+  // Thread priority init section
+  osThreadSetPriority(UART_led_control, osPriorityHigh);
+  osThreadSetPriority(movingGreenLED, osPriorityNormal);
+  osThreadSetPriority(movingRedLED, osPriorityNormal);
+  osThreadSetPriority(stationGreenLED, osPriorityNormal);
+  osThreadSetPriority(stationRedLED, osPriorityNormal);
+
 	osKernelStart();
 	for(;;){}
 }
