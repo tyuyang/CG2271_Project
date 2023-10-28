@@ -20,6 +20,10 @@ osEventFlagsId_t movingRedFlag;
 osEventFlagsId_t stationGreenFlag;
 osEventFlagsId_t stationRedFlag;
 
+// Using semaphores to ensure that UART thread does
+// not permanently preempt other lower priority threads
+osSemaphoreId_t uartThreadActivate;
+
 /**
  * Led flag control section. Activates and deactivates
  * moving or stationary threads when function is called
@@ -49,11 +53,13 @@ void UART1_IRQHandler(void) {
 	NVIC_ClearPendingIRQ(UART1_IRQn);
 	if (UART1->S1 & UART_S1_RDRF_MASK) {
 		rx_data = UART1->D;
+    osSemaphoreRelease(uartThreadActivate);
 	}
 }
 
 void UART_led_control(void *argument) {
 	for (;;){
+    osSemaphoreAcquire(uartThreadActivate, osWaitForever);
 		if ((rx_data & 0x0a) == 0x0a) {
 			forwardLeft();
       motorMovingFlagsSet();
@@ -136,6 +142,9 @@ int main(void)
   movingRedFlag = osEventFlagsNew(NULL);
   stationGreenFlag = osEventFlagsNew(NULL);
   stationRedFlag = osEventFlagsNew(NULL);
+
+  // Semaphore creation section
+  uartThreadActivate = osSemaphoreNew(1, 0, NULL);
 
   // Thread init section
 	osThreadNew(UART_led_control, NULL, NULL);
