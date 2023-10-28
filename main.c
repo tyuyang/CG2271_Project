@@ -20,6 +20,24 @@ osEventFlagsId_t movingRedFlag;
 osEventFlagsId_t stationGreenFlag;
 osEventFlagsId_t stationRedFlag;
 
+/**
+ * Led flag control section. Activates and deactivates
+ * moving or stationary threads when function is called
+*/
+
+void motorMovingFlagsSet() {
+  osEventFlagsSet(movingGreenFlag, 0x0001);
+  osEventFlagsSet(movingRedFlag, 0x0001);
+  osEventFlagsClear(stationGreenFlag,0x0001);
+  osEventFlagsClear(stationRedFlag,0x0001);
+}
+
+void motorStopFlagsSet() {
+  osEventFlagsSet(stationGreenFlag, 0x0001);
+  osEventFlagsSet(stationRedFlag, 0x0001);
+  osEventFlagsClear(movingGreenFlag,0x0001);
+  osEventFlagsClear(movingRedFlag,0x0001);
+}
 
 /**
  * UART section. IRQ_Handler obviously handles the irq
@@ -38,44 +56,32 @@ void UART_led_control(void *argument) {
 	for (;;){
 		if ((rx_data & 0x0a) == 0x0a) {
 			forwardLeft();
+      motorMovingFlagsSet();
 		}
 		else if ((rx_data & 0x06) == 0x06) {
 			forwardRight();
+      motorMovingFlagsSet();
 		}
 		else if ((rx_data & 0x02) == 0x02) {
 			moveForward();
+      motorMovingFlagsSet();
 		} 
 		else if ((rx_data & 0x01) == 0x01) {
 			moveBackward();
+      motorMovingFlagsSet();
 		}
 		else if ((rx_data & 0x08)) {
 			rotateLeft();
+      motorMovingFlagsSet();
 		} else if ((rx_data & 0x04)) {
 			rotateRight();
+      motorMovingFlagsSet();
 		}
 		else {
 			stopMotors();
+      motorStopFlagsSet();
 		}
 	}
-}
-
-/**
- * Led flag control section. Activates and deactivates
- * moving or stationary threads when function is called
-*/
-
-void motorMovingFlagsSet() {
-  osEventFlagsSet(movingGreenFlag, 0x0001);
-  osEventFlagsSet(movingRedFlag, 0x0001);
-  osEventFlagsClear(stationGreenFlag,0x0001);
-  osEventFlagsClear(stationRedFlag,0x0001);
-}
-
-void motorStopFlagsSet() {
-  osEventFlagsSet(stationGreenFlag, 0x0001);
-  osEventFlagsSet(stationRedFlag, 0x0001);
-  osEventFlagsClear(movingGreenFlag,0x0001);
-  osEventFlagsClear(movingRedFlag,0x0001);
 }
 
 /**
@@ -116,6 +122,7 @@ int main(void)
 	SystemCoreClockUpdate();
 
   // Init section
+  initGPIOLED();
 	InitUART1(BAUD_RATE);
 	initPWM();
 
