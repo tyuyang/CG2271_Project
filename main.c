@@ -11,7 +11,6 @@
 
 #define BAUD_RATE 9600
 
-volatile static color_t color = RED;
 volatile static uint8_t rx_data;
 
 
@@ -38,33 +37,25 @@ void UART1_IRQHandler(void) {
 void UART_led_control(void *argument) {
 	for (;;){
 		if ((rx_data & 0x0a) == 0x0a) {
-			color = CYAN;
 			forwardLeft();
 		}
 		else if ((rx_data & 0x06) == 0x06) {
-			color = YELLOW;
 			forwardRight();
 		}
 		else if ((rx_data & 0x02) == 0x02) {
-			color = GREEN;
 			moveForward();
 		} 
 		else if ((rx_data & 0x01) == 0x01) {
-			color = BLUE;
 			moveBackward();
 		}
 		else if ((rx_data & 0x08)) {
-			color = MAGENTA;
 			rotateLeft();
 		} else if ((rx_data & 0x04)) {
-			color = WHITE;
 			rotateRight();
 		}
 		else {
-			color = RED;
 			stopMotors();
 		}
-		led_control(color);
 	}
 }
 
@@ -125,12 +116,10 @@ int main(void)
 	SystemCoreClockUpdate();
 
   // Init section
-	InitGPIO();
 	InitUART1(BAUD_RATE);
 	initPWM();
 
   // Initial state
-	led_control(OFF);
 
   // OS section
 	osKernelInitialize();
